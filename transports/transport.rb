@@ -6,7 +6,7 @@ class Transport
   attr_accessor :max_weight, :speed, :available
 
   def initialize(max_weight, speed, available)
-    @max_weight = max_weightgi
+    @max_weight = max_weight
     @speed = speed
     @available = available
   end
