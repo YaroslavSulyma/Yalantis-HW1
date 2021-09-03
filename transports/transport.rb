@@ -1,4 +1,4 @@
-require './utils/constants'
+require_relative '../utils/constants'
 
 class Transport
   include Comparable
@@ -16,6 +16,10 @@ class Transport
   end
 
   def <=>(other)
-    delivery_time(distance) <=> other.delivery_time
+    if (max_weight <=> other.max_weight).zero?
+      max_distance <=> Float::INFINITY
+    else
+      max_weight <=> other.max_weight
+    end
   end
 end
