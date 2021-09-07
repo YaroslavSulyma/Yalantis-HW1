@@ -1,14 +1,39 @@
+# frozen_string_literal: true
+
 require_relative '../utils/constants'
 
 class Transport
   include Comparable
 
-  attr_accessor :max_weight, :speed, :available
+  attr_accessor :max_weight, :speed, :available, :number_of_deliveries, :delivery_cost, :location
 
-  def initialize(max_weight, speed, available)
+  def initialize(max_weight, speed, available, number_of_deliveries, delivery_cost, location)
     @max_weight = max_weight
     @speed = speed
     @available = available
+    @number_of_deliveries = number_of_deliveries
+    @delivery_cost = delivery_cost
+    %w[on_route in_garage].include?(location) ? @location = location : raise(StandardError::ArgumentError, 'Location should be on_route or in_garage')
+  end
+
+  def self.all
+    ObjectSpace.each_object(self).to_a
+  end
+
+  class << self
+    %i[max_weight speed available number_of_deliveries delivery_cost].each do |attribute|
+      define_method :"find_by_#{attribute}" do |value|
+        all.find { |transport| transport.public_send(attribute) == value }
+      end
+    end
+  end
+
+  class << self
+    %i[max_weight speed available number_of_deliveries delivery_cost].each do |attribute|
+      define_method :"filter_by_#{attribute}" do |value = nil, &block|
+        block ? (all.select { |transport| block.call transport.public_send(attribute) }) : (all.select { |transport| transport.public_send(attribute) == value })
+      end
+    end
   end
 
   def delivery_time(distance)
@@ -16,10 +41,6 @@ class Transport
   end
 
   def <=>(other)
-    if (max_weight <=> other.max_weight).zero?
-      max_distance <=> Float::INFINITY
-    else
-      max_weight <=> other.max_weight
-    end
+    (max_weight <=> other.max_weight).zero? ? max_distance <=> Float::INFINITY : max_weight <=> other.max_weight
   end
 end

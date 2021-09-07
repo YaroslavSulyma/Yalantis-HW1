@@ -5,8 +5,8 @@ class Car < Transport
 
   attr_accessor :registration_number
 
-  def initialize(available, registration_number)
-    super(CAR_MAX_WEIGHT, CAR_SPEED, available)
+  def initialize(available, registration_number, number_of_deliveries, delivery_cost, location)
+    super(CAR_MAX_WEIGHT, CAR_SPEED, available, number_of_deliveries, delivery_cost, location)
     @registration_number = registration_number
   end
 end

@@ -8,8 +8,8 @@ class DeliveryService
   attr_reader :park, :cars, :bikes
 
   def initialize(
-    cars = 7.times.collect { Car.new([true, false].sample, SecureRandom.uuid) },
-    bikes = 7.times.collect { Bike.new([true, false].sample) }
+    cars = 7.times.collect { Car.new([true, false].sample, SecureRandom.uuid, 10, rand(100), [:on_route, :in_garage].sample) },
+    bikes = 7.times.collect { Bike.new([true, false].sample, rand(10), rand(100), [:on_route, :in_garage].sample) }
   )
     @cars = cars
     @bikes = bikes
@@ -60,11 +60,12 @@ class DeliveryService
   end
 end
 
-#
-# service = DeliveryService.new
-# print service.get_transport(10, 31)
+DeliveryService.new
 
-t1 = Bike.new(true)
-t2 = Bike.new(true)
-
-print t1 > t2
+#p Car.filter_by_max_weight(100)
+p
+p Car.filter_by_number_of_deliveries { |number_of_deliveries| number_of_deliveries > 20 }
+p
+#p Car.find_by_speed(50)
+p
+#p Car.find_by_available(false)

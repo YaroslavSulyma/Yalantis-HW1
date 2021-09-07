@@ -5,8 +5,8 @@ class Bike < Transport
 
   attr_reader :max_distance
 
-  def initialize(available)
-    super(BIKE_MAX_WEIGHT, BIKE_SPEED, available)
+  def initialize(available, number_of_deliveries, delivery_cost, location)
+    super(BIKE_MAX_WEIGHT, BIKE_SPEED, available, number_of_deliveries, delivery_cost, location)
     @max_distance = BIKE_MAX_DISTANCE
   end
 end
