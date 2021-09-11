@@ -8,8 +8,9 @@ class DeliveryService
   attr_reader :park, :cars, :bikes
 
   def initialize(
-    cars = 7.times.collect { Car.new([true, false].sample, SecureRandom.uuid, 10, rand(100), [:on_route, :in_garage].sample) },
-    bikes = 7.times.collect { Bike.new([true, false].sample, rand(10), rand(100), [:on_route, :in_garage].sample) }
+    cars_count, bikes_count,
+    cars = cars_count.times.collect { Car.new([true, false].sample, SecureRandom.uuid, rand(10), rand(100), %w[on_route in_garage].sample) },
+    bikes = bikes_count.times.collect { Bike.new([true, false].sample, rand(10), rand(100), %w[on_route in_garage].sample) }
   )
     @cars = cars
     @bikes = bikes
@@ -17,55 +18,36 @@ class DeliveryService
   end
 
   def get_transport(weight, distance)
+    raise(StandardError, "Sorry we don't have available transport now") if available_transport.empty?
 
-    available_delivery_transport = available_transport(@park)
-
-    if available_delivery_transport.empty?
-      raise(StandardError, "Sorry we don't have available transport now")
-    elsif weight <= BIKE_MAX_WEIGHT && distance <= BIKE_MAX_DISTANCE
-      get_available_bikes(available_delivery_transport)
-    else
-      get_available_cars(available_delivery_transport)
-    end
+    weight <= BIKE_MAX_WEIGHT && distance <= BIKE_MAX_DISTANCE ? available_bikes : available_cars
   end
 
   private
 
-  def available_transport(transport)
-    transport.select do |t|
+  def available_transport
+    @park.select do |t|
       t.available == true
     end
   end
 
-  def get_bikes(park)
-    park.select do |t|
-      t.instance_of?(Bike)
+  def search_transport(klass)
+    available_transport.select do |t|
+      t.instance_of?(klass)
     end
   end
 
-  def get_available_bikes(available_delivery_transport)
-    bikes = get_bikes(available_delivery_transport)
-    bikes.empty? ? get_cars(available_delivery_transport) : bikes
+  def available_bikes
+    bikes = search_transport(Bike)
+    bikes.empty? ? search_transport(Car) : bikes
   end
 
-  def get_available_cars(available_delivery_transport)
-    cars = get_cars(available_delivery_transport)
+  def available_cars
+    cars = search_transport(Car)
     cars.empty? ? raise(StandardError, "Sorry we don't have available cars now") : cars
-  end
-
-  def get_cars(park)
-    park.select do |t|
-      t.instance_of?(Car)
-    end
   end
 end
 
-DeliveryService.new
+p DeliveryService.new(5, 5).get_transport(10, 10)
 
-#p Car.filter_by_max_weight(100)
-p
-p Car.filter_by_number_of_deliveries { |number_of_deliveries| number_of_deliveries > 20 }
-p
-#p Car.find_by_speed(50)
-p
-#p Car.find_by_available(false)
+p Car.filter_by_number_of_deliveries { |number_of_deliveries| number_of_deliveries > 5 }

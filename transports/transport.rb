@@ -16,8 +16,12 @@ class Transport
     %w[on_route in_garage].include?(location) ? @location = location : raise(StandardError::ArgumentError, 'Location should be on_route or in_garage')
   end
 
+  # def self.all
+  #   ObjectSpace.each_object(self).to_a
+  # end
+
   def self.all
-    ObjectSpace.each_object(self).to_a
+    Car.all + Bike.all
   end
 
   class << self
