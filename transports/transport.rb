@@ -13,12 +13,8 @@ class Transport
     @available = available
     @number_of_deliveries = number_of_deliveries
     @delivery_cost = delivery_cost
-    %w[on_route in_garage].include?(location) ? @location = location : raise(StandardError::ArgumentError, 'Location should be on_route or in_garage')
+    %w[on_route in_garage].include?(location) ? @location = location : raise(ArgumentError, 'Location should be on_route or in_garage')
   end
-
-  # def self.all
-  #   ObjectSpace.each_object(self).to_a
-  # end
 
   def self.all
     Car.all + Bike.all

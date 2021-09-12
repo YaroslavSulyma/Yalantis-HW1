@@ -16,4 +16,5 @@ class Car < Transport
   def self.all
     @@car_instances.to_a
   end
+
 end

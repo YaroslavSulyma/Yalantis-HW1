@@ -8,9 +8,9 @@ class DeliveryService
   attr_reader :park, :cars, :bikes
 
   def initialize(
-    cars_count, bikes_count,
-    cars = cars_count.times.collect { Car.new([true, false].sample, SecureRandom.uuid, rand(10), rand(100), %w[on_route in_garage].sample) },
-    bikes = bikes_count.times.collect { Bike.new([true, false].sample, rand(10), rand(100), %w[on_route in_garage].sample) }
+    cars_count, bikes_count, cars_availability, bikes_availability,
+    cars = cars_count.times.collect { Car.new(cars_availability, SecureRandom.uuid, rand(10), rand(100), %w[on_route in_garage].sample) },
+    bikes = bikes_count.times.collect { Bike.new(bikes_availability, rand(10), rand(100), %w[on_route in_garage].sample) }
   )
     @cars = cars
     @bikes = bikes
@@ -47,7 +47,3 @@ class DeliveryService
     cars.empty? ? raise(StandardError, "Sorry we don't have available cars now") : cars
   end
 end
-
-p DeliveryService.new(5, 5).get_transport(10, 10)
-
-p Car.filter_by_number_of_deliveries { |number_of_deliveries| number_of_deliveries > 5 }
