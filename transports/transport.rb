@@ -16,20 +16,16 @@ class Transport
     %w[on_route in_garage].include?(location) ? @location = location : raise(ArgumentError, 'Location should be on_route or in_garage')
   end
 
-  def self.all
-    Car.all + Bike.all
-  end
-
   class << self
+
+    def all
+      Car.instance_variable_get(:@instances) + Bike.instance_variable_get(:@instances)
+    end
+
     %i[max_weight speed available number_of_deliveries delivery_cost].each do |attribute|
       define_method :"find_by_#{attribute}" do |value|
         all.find { |transport| transport.public_send(attribute) == value }
       end
-    end
-  end
-
-  class << self
-    %i[max_weight speed available number_of_deliveries delivery_cost].each do |attribute|
       define_method :"filter_by_#{attribute}" do |value = nil, &block|
         block ? (all.select { |transport| block.call transport.public_send(attribute) }) : (all.select { |transport| transport.public_send(attribute) == value })
       end

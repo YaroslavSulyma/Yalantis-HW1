@@ -47,3 +47,7 @@ class DeliveryService
     cars.empty? ? raise(StandardError, "Sorry we don't have available cars now") : cars
   end
 end
+
+DeliveryService.new(4, 4, true, true)
+
+p Transport.all
