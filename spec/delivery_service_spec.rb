@@ -1,5 +1,6 @@
 require 'rspec'
-require_relative '../services/delivery_service'
+require_relative '../app/services/delivery_service'
+require 'shared_examples/shared_examples_no_available_transport_spec'
 require 'faker'
 
 describe DeliveryService do
@@ -35,6 +36,8 @@ describe DeliveryService do
   end
 
   context '#get_transport should' do
+    let(:_weight) { 10 }
+    let(:_distance) { 10 }
     it 'return array of available transport' do
       expect(available_transport.get_transport(weight, distance)).to be_an_instance_of(Array)
     end
@@ -44,23 +47,21 @@ describe DeliveryService do
     end
 
     it 'return available bikes' do
-      weight = 10
-      distance = 10
-
-      expect(unavailable_cars.get_transport(weight, distance)).to all(be_an_instance_of(Bike))
+      expect(unavailable_cars.get_transport(_weight, _distance)).to all(be_an_instance_of(Bike))
     end
   end
 
   context 'should rise error' do
-    it 'when no available transport' do
-      expect { unavailable_transport.get_transport(weight, distance) }.to raise_error(StandardError, 'Sorry we don\'t have available transport now')
+    it_behaves_like 'when no available transport' do
+      let(:transport) { unavailable_transport }
+      let(:message) { 'Sorry we don\'t have available transport now' }
     end
 
-    it 'when no available cars' do
-      weight = 90
-      distance = 200
-
-      expect { unavailable_cars.get_transport(weight, distance) }.to raise_error(StandardError, 'Sorry we don\'t have available cars now')
+    it_behaves_like 'when no available transport' do
+      let(:transport) { unavailable_cars }
+      let(:weight) { 90 }
+      let(:speed) { 200 }
+      let(:message) { 'Sorry we don\'t have available cars now' }
     end
   end
 end

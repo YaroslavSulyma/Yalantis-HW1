@@ -1,4 +1,7 @@
+# frozen_string_literal: true
+
 require_relative 'transport'
+require_relative '../utils/constants'
 
 class Car < Transport
   include Constants::Car
@@ -12,4 +15,10 @@ class Car < Transport
     @registration_number = registration_number
     self.class.instance_variable_get(:@instances) << self
   end
+
+  # class << self
+  #   def all
+  #     instance_variable_get(:@instances)
+  #   end
+  # end
 end

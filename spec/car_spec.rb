@@ -1,10 +1,10 @@
 require 'rspec'
-require_relative '../transports/car'
-require_relative '../transports/bike'
+require_relative '../app/transports/car'
+require_relative '../app/transports/bike'
 require 'faker'
 
 describe Car do
-  let(:available) { Faker::Boolean }
+  let(:available) { Faker::Boolean.boolean }
   let(:registration_number) { Faker::IDNumber.croatian_id(international: true) }
   let(:number_of_deliveries) { Faker::Number.rand(200) }
   let(:delivery_cost) { Faker::Number.rand(100) }

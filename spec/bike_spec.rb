@@ -1,10 +1,11 @@
 require 'rspec'
-require_relative '../transports/bike'
-require_relative '../transports/car'
+require_relative '../app/transports/bike'
+require_relative '../app/transports/car'
+require_relative 'shared_examples/shared_examples_find_by_spec'
 require 'faker'
 
 describe Bike do
-  let(:available) { Faker::Boolean }
+  let(:available) { Faker::Boolean.boolean }
   let(:number_of_deliveries) { Faker::Number.rand(50) }
   let(:delivery_cost) { Faker::Number.rand(200) }
   let(:location) { %w[on_route in_garage].sample }
@@ -34,7 +35,11 @@ describe Bike do
     end
 
     it 'should be array of Bikes' do
-      expect(Bike.all).to all(be_instance_of(described_class))
+      expect(described_class.all).to all(be_instance_of(described_class))
+    end
+
+    it 'should returning every single Bike instance created ' do
+      expect(described_class.all.each { |value| value.instance_of?(Bike) }).to be_truthy
     end
   end
 end

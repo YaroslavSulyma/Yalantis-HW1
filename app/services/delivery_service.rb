@@ -9,8 +9,8 @@ class DeliveryService
 
   def initialize(
     cars_count, bikes_count, cars_availability, bikes_availability,
-    cars = cars_count.times.collect { Car.new(cars_availability, SecureRandom.uuid, rand(10), rand(100), %w[on_route in_garage].sample) },
-    bikes = bikes_count.times.collect { Bike.new(bikes_availability, rand(10), rand(100), %w[on_route in_garage].sample) }
+    cars = cars_count.times.map { Car.new(cars_availability, SecureRandom.uuid, rand(10), rand(100), %w[on_route in_garage].sample) },
+    bikes = bikes_count.times.map { Bike.new(bikes_availability, rand(10), rand(100), %w[on_route in_garage].sample) }
   )
     @cars = cars
     @bikes = bikes
@@ -47,7 +47,3 @@ class DeliveryService
     cars.empty? ? raise(StandardError, "Sorry we don't have available cars now") : cars
   end
 end
-
-DeliveryService.new(4, 4, true, true)
-
-p Transport.all
